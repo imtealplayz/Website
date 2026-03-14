@@ -45,23 +45,75 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;ali
 .nav-cta:hover{background:var(--teal-dim)!important}
 
 /* HAMBURGER */
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;z-index:300}
-.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;z-index:300;border-radius:8px;transition:background .2s}
+.hamburger:hover{background:var(--teal-pale)}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--text);border-radius:2px;transition:all .3s ease}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 
-.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(11,13,17,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:150;flex-direction:column;align-items:center;justify-content:center;gap:2rem;opacity:0;transition:opacity .3s}
-.mobile-menu.open{display:flex;opacity:1}
-.mobile-menu a{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--muted);text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.02em}
-.mobile-menu a:hover{color:var(--teal)}
+/* MOBILE DROPDOWN MENU */
+.mobile-menu{
+  display:none;
+  position:fixed;
+  top:64px;left:0;right:0;
+  z-index:150;
+  background:rgba(11,13,17,0.97);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border-teal);
+  padding:1rem 5% 1.5rem;
+  transform:translateY(-8px);
+  opacity:0;
+  transition:opacity .25s ease, transform .25s ease;
+  pointer-events:none;
+}
+.mobile-menu.open{
+  display:block;
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:all;
+}
+.mobile-menu-inner{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.mobile-menu a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;
+  font-weight:400;
+  color:var(--muted);
+  text-decoration:none;
+  cursor:pointer;
+  padding:10px 12px;
+  border-radius:9px;
+  transition:all .18s ease;
+  border:1px solid transparent;
+  letter-spacing:.01em;
+  opacity:0;
+  transform:translateY(-6px);
+}
+.mobile-menu.open a:nth-child(1){animation:menuItemIn .2s ease .05s forwards}
+.mobile-menu.open a:nth-child(2){animation:menuItemIn .2s ease .1s forwards}
+.mobile-menu.open a:nth-child(3){animation:menuItemIn .2s ease .15s forwards}
+.mobile-menu.open a:nth-child(4){animation:menuItemIn .2s ease .2s forwards}
+@keyframes menuItemIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.mobile-menu a:hover{color:var(--text);background:var(--teal-pale);border-color:var(--border-teal)}
 .mobile-menu a.active{color:var(--teal)}
-.mobile-menu .m-cta{background:var(--teal);color:var(--bg)!important;padding:12px 36px;border-radius:9px;font-size:20px!important}
+.mobile-menu a.active .m-dot{background:var(--teal)}
+.m-dot{width:5px;height:5px;border-radius:50%;background:var(--muted2);flex-shrink:0;transition:background .2s}
+.mobile-menu .m-cta{background:var(--teal);color:var(--bg)!important;border-color:var(--teal)!important;font-weight:500;margin-top:6px}
+.mobile-menu .m-cta:hover{background:var(--teal-dim)!important}
+.mobile-menu .m-cta .m-dot{background:var(--bg)!important}
 
 /* PAGE TRANSITIONS */
-.page{display:none;padding-top:64px;min-height:100vh;position:relative;z-index:1;opacity:0;transition:opacity .35s ease}
-.page.active{display:block}
-.page.visible{opacity:1}
+.page{display:none;padding-top:64px;min-height:100vh;position:relative;z-index:1}
+.page.active{display:block;animation:pageIn .3s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 @keyframes gridShift{0%{background-position:0 0}100%{background-position:60px 60px}}
@@ -272,10 +324,12 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobile-menu">
-  <a onclick="showPage('home');closeMenu()" id="mnav-home" class="active">Home</a>
-  <a onclick="showPage('packages');closeMenu()" id="mnav-packages">Packages</a>
-  <a onclick="showPage('showcase');closeMenu()" id="mnav-showcase">Showcase</a>
-  <a onclick="showPage('contact');closeMenu()" id="mnav-contact" class="m-cta">Contact</a>
+  <div class="mobile-menu-inner">
+    <a onclick="showPage('home');closeMenu()" id="mnav-home" class="active"><span class="m-dot"></span>Home</a>
+    <a onclick="showPage('packages');closeMenu()" id="mnav-packages"><span class="m-dot"></span>Packages</a>
+    <a onclick="showPage('showcase');closeMenu()" id="mnav-showcase"><span class="m-dot"></span>Showcase</a>
+    <a onclick="showPage('contact');closeMenu()" id="mnav-contact" class="m-cta"><span class="m-dot"></span>Contact</a>
+  </div>
 </div>
 
 <!-- ══ HOME ══ -->
@@ -515,44 +569,43 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
 <script>
 /* PAGE TRANSITIONS */
 function showPage(name) {
-  const current = document.querySelector('.page.active');
-  const next = document.getElementById('page-' + name);
-  if (current === next) return;
-  current.classList.remove('visible');
-  setTimeout(() => {
-    current.classList.remove('active');
-    next.classList.add('active');
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => requestAnimationFrame(() => next.classList.add('visible')));
-  }, 200);
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
   const navEl = document.getElementById('nav-' + name);
   const mnavEl = document.getElementById('mnav-' + name);
   if (navEl) navEl.classList.add('active');
   if (mnavEl) mnavEl.classList.add('active');
+  window.scrollTo(0, 0);
 }
-
-/* Init first page visible */
-window.addEventListener('DOMContentLoaded', () => {
-  const first = document.querySelector('.page.active');
-  if (first) requestAnimationFrame(() => requestAnimationFrame(() => first.classList.add('visible')));
-});
 
 /* HAMBURGER */
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
   const btn = document.getElementById('hamburger');
-  menu.classList.toggle('open');
-  btn.classList.toggle('open');
-  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+    document.body.style.overflow = '';
+  } else {
+    menu.classList.add('open');
+    btn.classList.add('open');
+    document.body.style.overflow = '';
+  }
 }
 function closeMenu() {
-  const menu = document.getElementById('mobile-menu');
-  const btn = document.getElementById('hamburger');
-  menu.classList.remove('open');
-  btn.classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
   document.body.style.overflow = '';
 }
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    closeMenu();
+  }
+});
 
 /* FAQ */
 function toggleFaq(item) {
