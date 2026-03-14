@@ -1,0 +1,211 @@
+body{
+margin:0;
+font-family:Arial;
+color:white;
+background:linear-gradient(-45deg,#0f0f0f,#141414,#1a1a1a,#0f0f0f);
+background-size:400% 400%;
+animation:bgmove 15s ease infinite;
+text-align:center;
+}
+
+/* NAVBAR */
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:#0b0b0b;
+}
+
+.logo{
+color:#5865F2;
+font-size:24px;
+}
+
+nav ul{
+display:flex;
+gap:30px;
+list-style:none;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+}
+
+nav a:hover
+
+/* HERO */
+
+header{
+padding:120px 20px;
+}
+
+.hero-title{
+font-size:60px;
+color:#5865F2;
+text-shadow:0 0 20px #5865F2;
+animation:fade 1.5s ease;
+}
+
+.hero-text{
+opacity:0.8;
+margin-bottom:25px;
+font-size:18px;
+}
+
+/* BUTTONS */
+
+.main-btn{
+background:#5865F2;
+border:none;
+padding:15px 30px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.main-btn:hover{
+transform:scale(1.1);
+box-shadow:0 0 25px #5865F2;
+}
+
+.order-btn{
+background:#5865F2;
+border:none;
+padding:10px 20px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.order-btn:hover{
+transform:scale(1.1);
+}
+
+.buy-btn{
+margin-top:20px;
+background:#5865F2;
+border:none;
+padding:12px 20px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.buy-btn:hover{
+transform:scale(1.1);
+box-shadow:0 0 20px #5865F2;
+}
+
+/* DISCORD BUTTON */
+
+.discord-glow{
+background:#5865F2;
+border:none;
+padding:16px 35px;
+border-radius:8px;
+font-size:18px;
+color:white;
+cursor:pointer;
+transition:0.3s;
+margin-top:20px;
+}
+
+.discord-glow:hover{
+transform:scale(1.1);
+box-shadow:0 0 30px #5865F2;
+}
+
+/* FEATURES */
+
+.features{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+margin-top:80px;
+}
+
+.feature-card{
+background:#1c1c1c;
+padding:30px;
+border-radius:12px;
+width:250px;
+transition:0.3s;
+}
+
+.feature-card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 20px #5865F2;
+}
+
+/* PACKAGES */
+
+.packages{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+margin-top:80px;
+}
+
+.card{
+background:#1c1c1c;
+padding:30px;
+border-radius:12px;
+width:260px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
+box-shadow:0 0 20px #5865F2;
+}
+
+.card ul{
+list-style:none;
+padding:0;
+}
+
+.card li{
+margin:10px 0;
+}
+
+/* DISCORD SECTION */
+
+.discord-section{
+margin-top:100px;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:120px;
+padding:30px;
+background:#0b0b0b;
+}
+
+/* ANIMATIONS */
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+@keyframes bgmove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
