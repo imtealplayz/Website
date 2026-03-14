@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teal's Servers — Premium Discord Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #00C9A7;
+    --teal-dim: #00A88C;
+    --teal-glow: rgba(0,201,167,0.15);
+    --teal-pale: rgba(0,201,167,0.08);
+    --bg: #0B0D11;
+    --bg2: #10131A;
+    --bg3: #161B26;
+    --border: rgba(255,255,255,0.07);
+    --border-teal: rgba(0,201,167,0.25);
+    --text: #F0F2F5;
+    --muted: #7A8499;
+    --muted2: #4A5168;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--teal-dim); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    background: rgba(11,13,17,0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .logo-box {
+    width: 34px; height: 34px;
+    background: var(--teal-pale);
+    border: 1px solid var(--border-teal);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-diamond {
+    width: 12px; height: 12px;
+    background: var(--teal);
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+
+  .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .logo-text span { color: var(--teal); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links li a {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .nav-links li a:hover,
+  .nav-links li a.active { color: var(--text); }
+
+  .nav-links li a.active { color: var(--teal); }
+
+  .nav-cta {
+    background: var(--teal) !important;
+    color: var(--bg) !important;
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-weight: 500 !important;
+    font-size: 13px !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--teal-dim) !important; }
+
+  /* ── PAGE CONTAINER ── */
+  .page { display: none; padding-top: 64px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ══════════════════════════
+     HOME PAGE
+  ══════════════════════════ */
+
+  /* HERO */
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 5%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,201,167,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,201,167,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(0,201,167,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal-pale);
+    border: 1px solid var(--border-teal);
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(44px, 7vw, 80px);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero h1 .teal { color: var(--teal); }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 4rem;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal);
+    color: var(--bg);
+    padding: 13px 28px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    background: var(--teal-dim);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--teal);
+    padding: 13px 28px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--border-teal);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-outline:hover {
+    background: var(--teal-pale);
+    transform: translateY(-2px);
+  }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: left;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border-teal);
+    transform: translateY(-3px);
+  }
+
+  .feature-card:hover::after { opacity: 1; }
+
+  .feature-icon {
+    width: 42px; height: 42px;
+    background: var(--teal-pale);
+    border: 1px solid var(--border-teal);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .feature-icon svg { width: 18px; height: 18px; stroke: var(--teal); }
+
+  .feature-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .feature-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* JOIN COMMUNITY */
+  .community-section {
+    padding: 6rem 5%;
+    text-align: center;
+  }
+
+  .community-card {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--bg2);
+    border: 1px solid var(--border-teal);
+    border-radius: 20px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .community-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 200px;
+    background: radial-gradient(ellipse, rgba(0,201,167,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .community-card h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .community-card p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+    margin-bottom: 1.75rem;
+  }
+
+  .discord-username {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 1.25rem;
+    font-family: 'DM Sans', monospace;
+  }
+
+  .discord-username span { color: var(--teal); }
+
+
+  /* ══════════════════════════
+     PACKAGES PAGE
+  ══════════════════════════ */
+
+  .page-hero {
+    padding: 4rem 5% 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-hero-glow {
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 200px;
+    background: radial-gradient(ellipse, rgba(0,201,167,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .page-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--teal);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .page-hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+
+  .page-hero p {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 440px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 5% 5rem;
+  }
+
+  .pkg-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pkg-card.featured {
+    border-color: var(--border-teal);
+    background: var(--bg3);
+  }
+
+  .pkg-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), #00FFD1);
+  }
+
+  .pkg-card:hover {
+    border-color: var(--border-teal);
+    transform: translateY(-4px);
+  }
+
+  .pkg-badge {
+    display: inline-block;
+    background: var(--teal-pale);
+    border: 1px solid var(--border-teal);
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.05em;
+    width: fit-content;
+  }
+
+  .pkg-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    margin-bottom: 4px;
+  }
+
+  .pkg-sub {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+
+  .pkg-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 0 1.5rem;
+  }
+
+  .pkg-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    margin-bottom: 2rem;
+  }
+
+  .pkg-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--teal-pale);
+    border: 1px solid var(--border-teal);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .check::after {
+    content: '';
+    width: 6px; height: 4px;
+    border-left: 1.5px solid var(--teal);
+    border-bottom: 1.5px solid var(--teal);
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  .pkg-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted2);
+    margin-top: 1rem;
+    font-style: italic;
+  }
+
+
+  /* ══════════════════════════
+     SHOWCASE PAGE
+  ══════════════════════════ */
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 5% 5rem;
+  }
+
+  .showcase-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+
+  .showcase-card:hover {
+    border-color: var(--border-teal);
+    transform: translateY(-3px);
+  }
+
+  .showcase-thumb {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .st-1 { background: linear-gradient(135deg, #0B1A2E 0%, #0F2A3A 100%); }
+  .st-2 { background: linear-gradient(135deg, #1A0D2E 0%, #2A0F3A 100%); }
+  .st-3 { background: linear-gradient(135deg, #0D1A1A 0%, #0A2A2A 100%); }
+  .st-4 { background: linear-gradient(135deg, #1A1A0D 0%, #2A2A0A 100%); }
+
+  .thumb-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    opacity: 0.18;
+    letter-spacing: -0.03em;
+    color: white;
+    user-select: none;
+  }
+
+  .thumb-tag {
+    position: absolute;
+    bottom: 12px; left: 16px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--border-teal);
+    color: var(--teal);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.08em;
+  }
+
+  .showcase-body {
+    padding: 18px 20px 22px;
+  }
+
+  .showcase-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .showcase-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .showcase-footer {
+    text-align: center;
+    padding: 0 5% 4rem;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .showcase-footer span { color: var(--teal); }
+
+
+  /* ══════════════════════════
+     CONTACT PAGE
+  ══════════════════════════ */
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 5% 5rem;
+    align-items: start;
+  }
+
+  .contact-info h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+
+  .contact-info p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+
+  .contact-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .detail-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .detail-card:hover { border-color: var(--border-teal); }
+
+  .detail-icon {
+    width: 36px; height: 36px;
+    background: var(--teal-pale);
+    border: 1px solid var(--border-teal);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .detail-icon svg { width: 16px; height: 16px; stroke: var(--teal); }
+
+  .detail-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .detail-value {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .contact-discord {
+    background: var(--bg2);
+    border: 1px solid var(--border-teal);
+    border-radius: 18px;
+    padding: 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-discord::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 150px;
+    background: radial-gradient(ellipse, rgba(0,201,167,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .discord-icon {
+    width: 64px; height: 64px;
+    background: #5865F2;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+
+  .discord-icon svg { width: 34px; height: 34px; fill: white; }
+
+  .contact-discord h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-discord p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-discord {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #5865F2;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .btn-discord:hover {
+    background: #4752C4;
+    transform: translateY(-2px);
+  }
+
+  .handle-pill {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: monospace;
+  }
+
+  .handle-pill span { color: var(--teal); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-left {
+    font-size: 13px;
+    color: var(--muted2);
+    font-weight: 300;
+  }
+
+  .footer-left span { color: var(--teal); }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--muted2);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--teal); }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--teal);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--teal);
+    display: block;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 800px) {
+    .features-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .packages-grid { grid-template-columns: 1fr; }
+    .showcase-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-box"><div class="logo-diamond"></div></div>
+    <span class="logo-text">Teal<span>'s</span> Servers</span>
+  </div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+    <li><a onclick="showPage('packages')" id="nav-packages">Packages</a></li>
+    <li><a onclick="showPage('showcase')" id="nav-showcase">Showcase</a></li>
+    <li><a onclick="showPage('contact')" id="nav-contact" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        Professional Discord Setup Service
+      </div>
+      <h1>
+        Premium<br>
+        <span class="teal">Discord</span><br>
+        Servers.
+      </h1>
+      <p class="hero-sub">
+        Professional Discord communities designed to grow your server — beautifully built, fast delivered.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="showPage('packages')">
+          View Packages
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="btn-outline" onclick="showPage('showcase')">See Showcase</button>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 3l1.5 4.5H16l-3.7 2.7 1.4 4.3L10 12l-3.7 2.5 1.4-4.3L4 7.5h4.5z"/>
+            </svg>
+          </div>
+          <div class="feature-title">Fast Setup</div>
+          <p class="feature-desc">Your server can be ready within hours of ordering.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 2L3 6v5c0 4 3 6.5 7 8 4-1.5 7-4 7-8V6l-7-4z"/>
+            </svg>
+          </div>
+          <div class="feature-title">Secure Moderation</div>
+          <p class="feature-desc">Advanced anti-raid and moderation setup included.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="16" height="12" rx="2"/>
+              <path d="M6 8h8M6 11h5"/>
+            </svg>
+          </div>
+          <div class="feature-title">Beautiful Layout</div>
+          <p class="feature-desc">Clean and organized channel structures, built to impress.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="community-section">
+    <div class="community-card">
+      <div class="section-label" style="justify-content:center;">Community</div>
+      <h2>Join Our Discord</h2>
+      <p>Become part of the community, get updates, and see what we're building next.</p>
+      <a href="https://discord.gg/AhwZUt9kAU" target="_blank" class="btn-discord" style="max-width:280px;margin:0 auto 1rem;">
+        <svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Our Discord
+      </a>
+      <div class="discord-username">Contact: <span>@tealgaveup</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">© 2026 <span>Teal's Servers</span>. All rights reserved.</div>
+    <ul class="footer-links">
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('packages')">Packages</a></li>
+      <li><a onclick="showPage('showcase')">Showcase</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul>
+  </footer>
+</div>
+
+<!-- ══════════ PACKAGES ══════════ -->
+<div class="page" id="page-packages">
+  <div class="page-hero">
+    <div class="page-hero-glow"></div>
+    <div class="page-tag">What we offer</div>
+    <h1>Discord Server Packages</h1>
+    <p>Choose the perfect setup for your community. All servers are professionally designed.</p>
+  </div>
+
+  <div class="packages-grid">
+    <div class="pkg-card">
+      <div class="pkg-badge">Starter</div>
+      <div class="pkg-name">Basic Server</div>
+      <div class="pkg-sub">Everything you need to get started</div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="check"></div> Channel Setup</li>
+        <li><div class="check"></div> Roles System</li>
+        <li><div class="check"></div> Basic Bots</li>
+        <li><div class="check"></div> Simple Layout</li>
+      </ul>
+      <button class="btn-outline" onclick="showPage('contact')" style="width:100%">Order Basic →</button>
+    </div>
+
+    <div class="pkg-card featured">
+      <div class="pkg-badge">Most Popular</div>
+      <div class="pkg-name">Gaming Server</div>
+      <div class="pkg-sub">Built for gaming communities</div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="check"></div> Game Roles</li>
+        <li><div class="check"></div> Voice Channels</li>
+        <li><div class="check"></div> Moderation Bots</li>
+        <li><div class="check"></div> Events Channel</li>
+      </ul>
+      <button class="btn-primary" onclick="showPage('contact')" style="width:100%">Order Gaming →</button>
+    </div>
+
+    <div class="pkg-card">
+      <div class="pkg-badge">Premium</div>
+      <div class="pkg-name">Community Server</div>
+      <div class="pkg-sub">For serious communities</div>
+      <div class="pkg-divider"></div>
+      <ul class="pkg-features">
+        <li><div class="check"></div> Advanced Moderation</li>
+        <li><div class="check"></div> Leveling System</li>
+        <li><div class="check"></div> Custom Layout</li>
+        <li><div class="check"></div> Community Channels</li>
+      </ul>
+      <button class="btn-outline" onclick="showPage('contact')" style="width:100%">Order Community →</button>
+    </div>
+  </div>
+
+  <div class="pkg-note" style="text-align:center;padding:0 5% 4rem;font-size:13px;color:var(--muted2);font-style:italic;">
+    All servers are professionally designed. Contact via Discord for custom requests.
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 <span>Teal's Servers</span>. All rights reserved.</div>
+    <ul class="footer-links">
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('packages')">Packages</a></li>
+      <li><a onclick="showPage('showcase')">Showcase</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul>
+  </footer>
+</div>
+
+<!-- ══════════ SHOWCASE ══════════ -->
+<div class="page" id="page-showcase">
+  <div class="page-hero">
+    <div class="page-hero-glow"></div>
+    <div class="page-tag">Portfolio</div>
+    <h1>Server Showcase</h1>
+    <p>Examples of Discord servers I have designed. Every one built with care and precision.</p>
+  </div>
+
+  <div class="showcase-grid">
+    <div class="showcase-card">
+      <div class="showcase-thumb st-1">
+        <div class="thumb-label">GC</div>
+        <div class="thumb-tag">Gaming</div>
+      </div>
+      <div class="showcase-body">
+        <div class="showcase-title">Gaming Community</div>
+        <p class="showcase-desc">Organized channels, voice rooms, and game role systems for a seamless experience.</p>
+      </div>
+    </div>
+
+    <div class="showcase-card">
+      <div class="showcase-thumb st-2">
+        <div class="thumb-label">SS</div>
+        <div class="thumb-tag">Content Creator</div>
+      </div>
+      <div class="showcase-body">
+        <div class="showcase-title">Streamer Server</div>
+        <p class="showcase-desc">Perfect for Twitch or YouTube creators with dedicated fan channels and alerts.</p>
+      </div>
+    </div>
+
+    <div class="showcase-card">
+      <div class="showcase-thumb st-3">
+        <div class="thumb-label">LC</div>
+        <div class="thumb-tag">Community</div>
+      </div>
+      <div class="showcase-body">
+        <div class="showcase-title">Large Community</div>
+        <p class="showcase-desc">Advanced moderation, leveling system, and clean layouts built to scale.</p>
+      </div>
+    </div>
+
+    <div class="showcase-card">
+      <div class="showcase-thumb st-4">
+        <div class="thumb-label">ET</div>
+        <div class="thumb-tag">Esports</div>
+      </div>
+      <div class="showcase-body">
+        <div class="showcase-title">Esports Team</div>
+        <p class="showcase-desc">Private team channels, scrim rooms, and event organization for competitive play.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase-footer">More server designs coming <span>soon</span>.</div>
+
+  <footer>
+    <div class="footer-left">© 2026 <span>Teal's Servers</span>. All rights reserved.</div>
+    <ul class="footer-links">
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('packages')">Packages</a></li>
+      <li><a onclick="showPage('showcase')">Showcase</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul>
+  </footer>
+</div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div class="page" id="page-contact">
+  <div class="page-hero">
+    <div class="page-hero-glow"></div>
+    <div class="page-tag">Get in touch</div>
+    <h1>Contact Me</h1>
+    <p>Join my Discord server or message me directly to order your custom Discord setup.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="section-label">Details</div>
+      <h2>Let's build your server.</h2>
+      <p>Reach out and I'll get back to you quickly. Most servers are ready within 24 hours of ordering.</p>
+
+      <div class="contact-detail">
+        <div class="detail-card">
+          <div class="detail-icon">
+            <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="10" cy="10" r="7"/>
+              <path d="M10 6v4l3 3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="detail-title">Delivery Time</div>
+            <div class="detail-value">Most servers completed within 24 hours</div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-icon">
+            <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="6" height="6" rx="1"/>
+              <rect x="11" y="3" width="6" height="6" rx="1"/>
+              <rect x="3" y="11" width="6" height="6" rx="1"/>
+              <rect x="11" y="11" width="6" height="6" rx="1"/>
+            </svg>
+          </div>
+          <div>
+            <div class="detail-title">Custom Requests</div>
+            <div class="detail-value">Custom bots, roles, and layouts available</div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-icon">
+            <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 2L3 6v5c0 4 3 6.5 7 8 4-1.5 7-4 7-8V6l-7-4z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="detail-title">Discord Contact</div>
+            <div class="detail-value">Add @tealgaveup to discuss your setup</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-discord">
+      <div class="discord-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      </div>
+      <h3>Join My Discord Server</h3>
+      <p>The fastest way to order and get support. Click below to join and send a message.</p>
+      <a href="https://discord.gg/AhwZUt9kAU" target="_blank" class="btn-discord">
+        <svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Discord Server
+      </a>
+      <div class="handle-pill">@<span>tealgaveup</span></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 <span>Teal's Servers</span>. All rights reserved.</div>
+    <ul class="footer-links">
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('packages')">Packages</a></li>
+      <li><a onclick="showPage('showcase')">Showcase</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul>
+  </footer>
+</div>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const navEl = document.getElementById('nav-' + name);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>
