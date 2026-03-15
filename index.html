@@ -333,7 +333,7 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
 </div>
 
 <!-- ══ HOME ══ -->
-<div class="page" id="page-home">
+<div class="page active" id="page-home">
   <section class="hero">
     <div class="hero-grid-bg"></div>
     <div class="hero-glow"></div>
@@ -426,12 +426,18 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
     <h1>Discord Server Packages</h1>
     <p>Simple, transparent pricing. Pick a package and I'll handle the rest.</p>
   </div>
+
+  <div style="text-align:center;padding:.75rem 5% 0;display:flex;align-items:center;justify-content:center;gap:6px;">
+    <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 2s infinite;flex-shrink:0;"></div>
+    <span id="currency-label" style="font-size:12px;color:var(--muted);">Detecting your location...</span>
+  </div>
+
   <div class="packages-grid">
     <div class="pkg-card">
       <div class="pkg-badge">Starter</div>
       <div class="pkg-name">Basic Server</div>
       <div class="pkg-sub">Everything you need to get started</div>
-      <div class="pkg-price">$5 <span>/ one-time</span></div>
+      <div class="pkg-price"><span class="price-display" data-usd="2">$2</span> <span>/ one-time</span></div>
       <div class="pkg-divider"></div>
       <ul class="pkg-features">
         <li><div class="check"></div>Channel Setup</li>
@@ -445,7 +451,7 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
       <div class="pkg-badge">Most Popular</div>
       <div class="pkg-name">Gaming Server</div>
       <div class="pkg-sub">Built for gaming communities</div>
-      <div class="pkg-price">$10 <span>/ one-time</span></div>
+      <div class="pkg-price"><span class="price-display" data-usd="4">$4</span> <span>/ one-time</span></div>
       <div class="pkg-divider"></div>
       <ul class="pkg-features">
         <li><div class="check"></div>Game Roles</li>
@@ -459,7 +465,7 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
       <div class="pkg-badge">Premium</div>
       <div class="pkg-name">Community Server</div>
       <div class="pkg-sub">For serious communities</div>
-      <div class="pkg-price">$18 <span>/ one-time</span></div>
+      <div class="pkg-price"><span class="price-display" data-usd="7">$7</span> <span>/ one-time</span></div>
       <div class="pkg-divider"></div>
       <ul class="pkg-features">
         <li><div class="check"></div>Advanced Moderation</li>
@@ -469,6 +475,10 @@ footer{border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-ite
       </ul>
       <button class="btn-outline" onclick="showPage('contact')" style="width:100%">Order Community →</button>
     </div>
+  </div>
+
+  <div style="text-align:center;padding:0 5% 1.5rem;display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <p style="font-size:13px;color:var(--muted2);font-style:italic;">All prices are negotiable — just reach out on Discord.</p>
   </div>
 
   <!-- FAQ -->
@@ -613,6 +623,51 @@ function toggleFaq(item) {
   document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
+
+/* CURRENCY CONVERSION */
+const CURRENCY_MAP = {
+  IN:'INR',PK:'PKR',BD:'BDT',GB:'GBP',DE:'EUR',FR:'EUR',IT:'EUR',ES:'EUR',NL:'EUR',
+  AU:'AUD',CA:'CAD',JP:'JPY',CN:'CNY',BR:'BRL',MX:'MXN',KR:'KRW',SG:'SGD',
+  AE:'AED',SA:'SAR',NG:'NGN',ZA:'ZAR',PH:'PHP',ID:'IDR',MY:'MYR',TH:'THB',
+  TR:'TRY',AR:'ARS',EG:'EGP',GH:'GHS',KE:'KES',UA:'UAH',PL:'PLN',SE:'SEK',
+  NO:'NOK',DK:'DKK',CH:'CHF',RU:'RUB',VN:'VND'
+};
+const SYMBOLS = {
+  USD:'$',INR:'₹',PKR:'Rs',GBP:'£',EUR:'€',AUD:'A$',CAD:'C$',JPY:'¥',
+  CNY:'¥',BRL:'R$',MXN:'MX$',KRW:'₩',SGD:'S$',AED:'AED ',SAR:'SAR ',
+  NGN:'₦',ZAR:'R',PHP:'₱',IDR:'Rp',MYR:'RM',THB:'฿',TRY:'₺',ARS:'$',
+  EGP:'E£',BDT:'৳',GHS:'₵',KES:'KSh',UAH:'₴',PLN:'zł',SEK:'kr',
+  NOK:'kr',DKK:'kr',CHF:'CHF ',RUB:'₽',VND:'₫'
+};
+
+async function convertPrices() {
+  const label = document.getElementById('currency-label');
+  try {
+    const geoRes = await fetch('https://ipapi.co/json/');
+    const geo = await geoRes.json();
+    const country = geo.country_code;
+    const currency = CURRENCY_MAP[country] || 'USD';
+    if (currency === 'USD') {
+      if (label) label.textContent = 'Prices in USD';
+      return;
+    }
+    const rateRes = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+    const rateData = await rateRes.json();
+    const rate = rateData.rates[currency];
+    if (!rate) { if (label) label.textContent = 'Prices in USD'; return; }
+    const symbol = SYMBOLS[currency] || currency + ' ';
+    document.querySelectorAll('.price-display').forEach(el => {
+      const usd = parseFloat(el.dataset.usd);
+      const converted = usd * rate;
+      const rounded = converted < 10 ? converted.toFixed(2) : converted < 100 ? Math.round(converted) : Math.round(converted / 5) * 5;
+      el.textContent = symbol + rounded.toLocaleString();
+    });
+    if (label) label.innerHTML = `Showing prices in <strong style="color:var(--teal)">${currency}</strong> for ${geo.country_name}`;
+  } catch(e) {
+    if (label) label.textContent = 'Prices in USD';
+  }
+}
+convertPrices();
 
 /* PARTICLES */
 const canvas = document.getElementById('particle-canvas');
