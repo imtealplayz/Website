@@ -1194,24 +1194,27 @@ async function aiSend(id) {
   ['desktop','mobile'].forEach(t => aiAddTyping(t));
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': AI_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         system: AI_SYSTEM,
         messages: aiMessages
       })
     });
 
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      console.error('Anthropic API error:', res.status, errData);
+      throw new Error('API ' + res.status);
+    }
+
     const data = await res.json();
-    const rawText = data.content?.[0]?.text || "Something went wrong — reach me at @tealgaveup on Discord!";
+    console.log('AI response received');
+    const rawText = data.content?.[0]?.text;
+    if (!rawText) throw new Error('Empty response');
 
     let displayText = rawText;
     let packages = null;
@@ -1241,9 +1244,10 @@ async function aiSend(id) {
     ['desktop','mobile'].forEach(t => aiShowQR(t, qr));
 
   } catch(err) {
+    console.error('AI chat error:', err.message);
     ['desktop','mobile'].forEach(t => {
       aiRemoveTyping(t);
-      aiAddMsg(t, 'ai', 'Oops, something went wrong. DM @tealgaveup on Discord directly!');
+      aiAddMsg(t, 'ai', 'Oops, something went wrong. Please DM @tealgaveup on Discord directly!');
     });
   }
 
