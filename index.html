@@ -1194,11 +1194,16 @@ async function aiSend(id) {
   ['desktop','mobile'].forEach(t => aiAddTyping(t));
 
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': AI_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: AI_SYSTEM,
         messages: aiMessages
@@ -1208,7 +1213,7 @@ async function aiSend(id) {
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
       console.error('Anthropic API error:', res.status, errData);
-      throw new Error('API ' + res.status);
+      throw new Error('API ' + res.status + ': ' + (errData?.error?.message || ''));
     }
 
     const data = await res.json();
